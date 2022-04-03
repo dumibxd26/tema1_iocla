@@ -33,8 +33,6 @@ int add_at(void **arr, int *len, data_structure *data, int index)
 {
 	if(index < 0)
 		return 0;
-	
-	//*len += sizeof(head) + sizeof(ds_info);
 
 	char *arr_cast = (char *)(*arr);
 	char *add_from;
@@ -54,7 +52,7 @@ int add_at(void **arr, int *len, data_structure *data, int index)
 	for(int d = 0; d < sizeof(ds_info); d++)
 		arr_cast[i * SIZE_ADD + d + sizeof(head)] = add_from[d];
 
-	*len += sizeof(head) + sizeof(ds_info);
+	*len += SIZE_ADD;
 
 	return 1;
 
@@ -70,11 +68,11 @@ void find(void *data_block, int len, int index)
 
 	head *header = (head *)arr_cast;
 
-	printf("%d\n", header->type);
+	printf("Tipul %d\n", header->type);
 
 	ds_info *data = (ds_info *)(arr_cast + sizeof(head)); 
 
-	printf("%s\n", data->money_from);
+	printf("%s pentru %s\n", data->money_from, data->money_to);
 
 	if(header->type == 1)
 	{
@@ -94,14 +92,32 @@ void find(void *data_block, int len, int index)
 		printf("%"PRId32"\n", data->type.three.second_bill);
 	}
 	
-	printf("%s\n", data->money_to);
-	
+	printf("\n");
 
 }
 
 int delete_at(void **arr, int *len, int index)
 {
 
+	char *arr_cast = (char *)(*arr);
+
+	arr_cast += index * SIZE_ADD;
+
+	ds_info *info = (ds_info *)((arr_cast) + sizeof(head));
+
+    free(info->money_from);
+	free(info->money_to);
+
+	int i,j;
+	arr_cast = (char *)(*arr);
+
+	for(i = index; i < *len / SIZE_ADD - 1; i++)
+		for(j = 0; j < sizeof(head) + sizeof(ds_info); j++)
+			arr_cast[j + i * SIZE_ADD] = arr_cast[j + (i + 1) * SIZE_ADD];
+
+	*len -= SIZE_ADD;
+
+	return 1;
 }
 
 data_structure *input_data(char *p)
@@ -164,13 +180,31 @@ void print(void *arr, int len)
 
 }
 
+void clean_memory(void **arr, int *len)
+{
+	while(*len)
+		delete_at(arr, len, 0);
+
+	free(*arr);
+}
+
 int main() {
-	// the vector of bytes u have to work with
-	// good luck :)
-	void *arr = malloc(9999999);
+
+	void *arr = NULL;
 	int  len = 0;
-	char *line = malloc((BUFF_SIZE + 2) * sizeof(char));
+	int  arr_buffer = 1;
 	char *p;
+
+	arr = malloc(500000);
+
+	if(arr == NULL)
+	{
+		fprintf(stderr, "Malloc failure");
+		exit(0);
+	}
+
+	arr_buffer++;
+	char *line = malloc((BUFF_SIZE + 2) * sizeof(char));
 
 	if(line == NULL)
 	{
@@ -186,7 +220,7 @@ int main() {
 
 		p = strtok(line, " ");
 
-		if(strcmp(line, "insert") == 0) {
+		if (strcmp(line, "insert") == 0) {
 
 			data_structure *data = input_data(p);
 			add_last(&arr, &len, data);
@@ -194,11 +228,11 @@ int main() {
 			free(data->data);
 			free(data);
 
-		} else if(strcmp(line, "find") == 0) {
+		} else if (strcmp(line, "find") == 0) {
 			p = strtok(NULL, " ");
 			int index = atoi(p);
 			find(arr, len, index);
-		} else if(strcmp(line, "insert_at") == 0) {
+		} else if (strcmp(line, "insert_at") == 0) {
 			p = strtok(NULL, " ");
 			int index = atoi(p);
 			data_structure *data = input_data(p);
@@ -206,17 +240,23 @@ int main() {
 			free(data->header);
 			free(data->data);
 			free(data);
-		} else if(strcmp(line, "print") == 0) {
+		} else if (strcmp(line, "delete_at") == 0) {
+			p = strtok(NULL, " ");
+			int index = atoi(p);
+			delete_at(&arr, &len, index);
+		} else if (strcmp(line, "print") == 0) {
 			print((data_structure *)arr, len);
-		} else {
-			
-			free(arr);
+		} else if (strcmp(line, "exit") == 0) {
+
+			clean_memory(&arr, &len);
 			break;
 		}
 			
 	}
 
-	free(arr);
+	free(line);
+
+	
 
 	return 0;
 }
