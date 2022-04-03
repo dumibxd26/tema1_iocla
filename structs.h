@@ -8,6 +8,10 @@ typedef struct data_structure {
 	void *data;
 } data_structure;
 
+/**
+ * @brief Data structure used to store an entry's information
+ * 
+ */
 typedef struct ds_info {
 
 	char *money_from;
