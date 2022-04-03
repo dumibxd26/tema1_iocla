@@ -31,17 +31,3 @@ typedef struct ds_info {
 	
 	char   *money_to;
 } ds_info;
-
-// typedef struct type2 {
-// 	char   *money_from;
-// 	int16_t first_bill;
-// 	int32_t second_bill;
-// 	char   *money_to;
-// } type2;
-
-// typedef struct type3 {
-// 	char   *money_from;
-// 	int32_t first_bill;
-// 	int32_t second_bill;
-// 	char   *money_to;
-// } type3;
