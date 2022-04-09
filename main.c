@@ -94,7 +94,7 @@ int add_at(void **arr, int *len, data_structure *data, int index)
 
 }
 
-void find(void *data_block, int len, int index) 
+void find(void *data_block, int len, int index)
 {
 
 	if (index < 0 || index * (sizeof(ds_info) + sizeof(head)) >= len)
@@ -199,7 +199,7 @@ data_structure *input_data(void **arr, int *len, char *p)
 	{
 		clean_memory(arr, len);
 		fprintf(stderr, "Malloc failure");
-		exit(0);
+		exit(1);
 	}
 
 	read_structure->header = malloc(sizeof(head));
@@ -208,7 +208,7 @@ data_structure *input_data(void **arr, int *len, char *p)
 	{
 		clean_memory(arr, len);
 		fprintf(stderr, "Malloc failure");
-		exit(0);
+		exit(1);
 	}
 
 	ds_info *info = malloc(sizeof(ds_info));
@@ -217,11 +217,12 @@ data_structure *input_data(void **arr, int *len, char *p)
 	{
 		clean_memory(arr, len);
 		fprintf(stderr, "Malloc failure");
-		exit(0);
+		exit(1);
 	}
 
 	p = strtok(NULL, " ");
 	read_structure->header->type = (char)atoi(p);
+	read_structure->header->len = sizeof(ds_info);
 
 	p = strtok(NULL, " ");
 	info->money_from = strdup(p);
@@ -296,7 +297,7 @@ void array_realloc_function(void **arr, int *arr_buffer, int *len, int type)
 		{
 			clean_memory(arr, len);
 			fprintf(stderr, "Array realloc failure\n");
-			exit(0);
+			exit(1);
 		}
 
 		*arr = arr_realloc;
@@ -312,7 +313,7 @@ void array_realloc_function(void **arr, int *arr_buffer, int *len, int type)
 		{
 			clean_memory(arr, len);
 			fprintf(stderr, "Array realloc failure\n");
-			exit(0);
+			exit(1);
 		}
 
 		*arr = arr_realloc;
@@ -323,15 +324,15 @@ int main() {
 
 	void *arr = NULL;
 	int  len = 0;
-	int  arr_buffer = 64;
+	int  arr_buffer = BUFF_SIZE;
 	char *p;
 
-	arr = malloc(64);
+	arr = malloc(BUFF_SIZE);
 
 	if (arr == NULL)
 	{
 		fprintf(stderr, "Malloc failure");
-		exit(0);
+		exit(1);
 	}
 
 	char *line = malloc((BUFF_SIZE + 2) * sizeof(char));
@@ -339,12 +340,11 @@ int main() {
 	if (line == NULL)
 	{
 		fprintf(stderr, "Malloc failure");
-		exit(0);
+		exit(1);
 	}
 
 	while(1)
 	{
-
 		fgets(line, BUFF_SIZE + 1, stdin);
 		line[strlen(line) - 1] = '\0';
 

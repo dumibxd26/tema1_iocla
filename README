@@ -25,7 +25,7 @@ formula:
         head    *header = arr + index
         ds_info *info   = arr + index + sizeof(head)
 
- • For the array storing, we use an dinamically alocated generic array, which
+ • For the array storing, we use a dinamically allocated generic array, which
 increases/decreases in size by powers of two.
  
  • For deleting data from the array, we free the memory used for the storing
@@ -44,9 +44,15 @@ Basically we turn the array into a queue and we pop every first element.
  • For printing information, we make use of the find function, which shows
 the data stored at a specific index.
 
+ • I used some return value function as void functions, because I they 100%
+work in our case, and we don't need the returned value. In some cases, if 
+these functions are used in other programs, their return value might be useful
+E.g: add_last, we always get a valid array and valid data, it is not useful
+in our case.
+
   Erasing and printing are not very optimal, but I wanted to make use of 
 other functions to implement them.
 
-!!! I would be very happy if I received a big review, well explained
+!!! I would be very happy if I received a big, well explained
 review on my homework regarding coding style, things I should have done
 better and more, since this would help me on future projects !!!
